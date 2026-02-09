@@ -1,0 +1,57 @@
+[
+    {
+        "message": "Loading test dataset...",
+        "TEST_DIR": "C:\\Users\\it\\Desktop\\external\\aihub_release\\TrackB_binary\\data/processed/external_labeled/TrackC_BCC_MN/test",
+        "timestamp": "2026-02-09 14:55:42.892803"
+    },
+    {
+        "message": "Test dataset loaded.",
+        "num_samples": 50,
+        "batch_size": 32,
+        "timestamp": "2026-02-09 14:55:42.894815"
+    },
+    {
+        "message": "Loading model...",
+        "timestamp": "2026-02-09 14:55:42.894815"
+    },
+    {
+        "message": "Model loaded.",
+        "checkpoint_path": "C:\\Users\\it\\Desktop\\external\\aihub_release\\TrackB_binary\\runs\\TrackC\\model\\best_model.pth.tar",
+        "device": "cuda",
+        "timestamp": "2026-02-09 14:55:43.335813"
+    },
+    {
+        "message": "Starting evaluation...",
+        "timestamp": "2026-02-09 14:55:43.336806"
+    },
+    {
+        "message": "Metrics calculated.",
+        "threshold": 0.5,
+        "auroc": 0.41083333333333333,
+        "num_samples": 50,
+        "pos_rate_true": 0.6,
+        "pos_rate_pred": 0.96,
+        "timestamp": "2026-02-09 14:55:44.012810"
+    },
+    {
+        "message": "Saved outputs",
+        "TEST_LOG_DIR": "C:\\Users\\it\\Desktop\\external\\aihub_release\\TrackB_binary\\runs\\TrackC\\test_logs",
+        "timestamp": "2026-02-09 14:55:44.340803"
+    },
+    {
+        "message": "Paths",
+        "paths": {
+            "confusion_matrix_png": "C:\\Users\\it\\Desktop\\external\\aihub_release\\TrackB_binary\\runs\\TrackC\\test_logs\\confusion_matrix.png",
+            "roc_curve_png": "C:\\Users\\it\\Desktop\\external\\aihub_release\\TrackB_binary\\runs\\TrackC\\test_logs\\roc_curve.png",
+            "roc_values_csv": "C:\\Users\\it\\Desktop\\external\\aihub_release\\TrackB_binary\\runs\\TrackC\\test_logs\\roc_values.csv",
+            "prediction_results_csv": "C:\\Users\\it\\Desktop\\external\\aihub_release\\TrackB_binary\\runs\\TrackC\\test_logs\\prediction_results.csv",
+            "prediction_tableau_csv": "C:\\Users\\it\\Desktop\\external\\aihub_release\\TrackB_binary\\runs\\TrackC\\test_logs\\prediction_tableau.csv",
+            "metrics_summary_csv": "C:\\Users\\it\\Desktop\\external\\aihub_release\\TrackB_binary\\runs\\TrackC\\test_logs\\metrics_summary.csv"
+        },
+        "timestamp": "2026-02-09 14:55:44.341805"
+    },
+    {
+        "message": "Evaluation completed.",
+        "timestamp": "2026-02-09 14:55:44.342803"
+    }
+]

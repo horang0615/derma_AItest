@@ -15,8 +15,11 @@ from sklearn.metrics import (
 
 from dataset import FolderBinaryDataset
 from model import CustomEfficientNetB3Classifier
-from configs.config import DEVICE, TEST_DIR, TRANSFORM, BATCH_SIZE, MODEL_DIR, TEST_LOG_DIR, CLASS_NAMES
+from configs.config import DEVICE, TEST_DIR, TRANSFORM, BATCH_SIZE, MODEL_DIR, TEST_LOG_DIR, CLASS_NAMES, TRACK_NAME
+
 from logger import Logger
+print("[EVAL CONFIG]", TRACK_NAME, "| TEST_DIR =", TEST_DIR, "| MODEL_DIR =", MODEL_DIR)
+
 
 
 # ====== 설정 ======
