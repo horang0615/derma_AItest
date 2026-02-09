@@ -1,0 +1,16 @@
+# ===== Model checkpoints =====
+runs/
+*.pth
+*.pth.tar
+*.ckpt
+
+# ===== Data =====
+data/**/*
+!data/**/.gitkeep
+
+# ===== Cache =====
+__pycache__/
+*.pyc
+
+# ===== Logs / outputs =====
+*.log
