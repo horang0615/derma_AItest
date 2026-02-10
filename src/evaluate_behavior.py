@@ -5,7 +5,6 @@ from tqdm import tqdm
 
 import numpy as np
 import pandas as pd
-import shutil
 
 from sklearn.metrics import roc_auc_score
 
@@ -16,6 +15,10 @@ from configs.config import (
     MODEL_DIR, TEST_LOG_DIR, CLASS_NAMES, TRACK_NAME
 )
 from logger import Logger
+
+from datetime import datetime
+RUN_ID = datetime.now().strftime("%Y%m%d_%H%M%S")
+behavior_log_dir = os.path.join(TEST_LOG_DIR, f"behavior_{RUN_ID}")
 
 print("[EVAL-BEHAVIOR CONFIG]", TRACK_NAME, "| TEST_DIR =", TEST_DIR, "| MODEL_DIR =", MODEL_DIR)
 
@@ -54,13 +57,12 @@ def decide(prob: float) -> str:
 
 
 def evaluate_behavior():
-    # 폴더 준비
+    # 준비
     behavior_log_dir = os.path.join(TEST_LOG_DIR, "behavior")
-    ambiguous_dir = os.path.join(behavior_log_dir, "ambiguous_images")
     _ensure_dir(behavior_log_dir)
-    _ensure_dir(ambiguous_dir)
 
     logger = Logger(behavior_log_dir, log_file="evaluation_behavior_log.json")
+
     logger.log({
         "message": "Behavior evaluation started",
         "LOW": LOW,
@@ -68,21 +70,15 @@ def evaluate_behavior():
         "TRACK_NAME": TRACK_NAME
     })
 
-    # 데이터
     test_dataset = FolderBinaryDataset(root_dir=TEST_DIR, transform=TRANSFORM)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
-    print("classes:", test_dataset.ds.classes)
-    print("class_to_idx:", test_dataset.ds.class_to_idx)
-
-
-    # 모델
     model = CustomEfficientNetB3Classifier().to(DEVICE)
     checkpoint_path = os.path.join(MODEL_DIR, "best_model.pth.tar")
     model = _load_checkpoint(model, checkpoint_path, DEVICE)
     model.eval()
 
-    #평가
+    # 평가
     results = []
     all_probs = []
     all_labels = []
@@ -109,25 +105,11 @@ def evaluate_behavior():
                 prob = probs_np[i]
                 decision = decide(prob)
 
-                # status 정의
-                if decision == "ambiguous":
-                    status = "borderline"
-                else:
-                    pred = 1 if decision == "positive" else 0
-                    status = "success" if pred == labels_np[i] else "fail"
-
-                # borderline 이미지 복사
-                if status == "borderline":
-                    dst = os.path.join(ambiguous_dir, image_id)
-                    if not os.path.exists(dst):
-                        shutil.copy(image_path, dst)
-
                 results.append({
                     "image_id": image_id,
                     "y_true": int(labels_np[i]),
                     "y_prob": float(prob),
                     "decision": decision,
-                    "status": status
                 })
 
                 all_probs.append(prob)
@@ -136,20 +118,22 @@ def evaluate_behavior():
     df = pd.DataFrame(results)
 
     # 요약 지표
+    amb_ratio = float((df["decision"] == "ambiguous").mean())
+    coverage_ratio = float(1.0 - amb_ratio)
+
+    if len(np.unique(all_labels)) > 1:
+        auroc = float(roc_auc_score(all_labels, all_probs))
+    else:
+        auroc = None
+
     summary = {
         "LOW": LOW,
         "HIGH": HIGH,
         "num_samples": len(df),
-        "borderline_ratio": float((df["status"] == "borderline").mean()),
-        "success_ratio": float((df["status"] == "success").mean()),
-        "fail_ratio": float((df["status"] == "fail").mean()),
-        "coverage_ratio": float((df["status"] != "borderline").mean()),
+        "ambiguous_ratio": amb_ratio,
+        "coverage_ratio": coverage_ratio,
+        "auroc_all": auroc,
     }
-
-    if len(np.unique(all_labels)) > 1:
-        summary["auroc_all"] = float(roc_auc_score(all_labels, all_probs))
-    else:
-        summary["auroc_all"] = None
 
     # 저장
     df.to_csv(

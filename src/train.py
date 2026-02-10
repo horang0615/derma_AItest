@@ -22,9 +22,9 @@ from logger import Logger
 from model import CustomEfficientNetB3Classifier
 
 
-# =========================
+
 # 0) 재현성 고정
-# =========================
+
 def set_seed(seed: int):
     random.seed(seed)
     np.random.seed(seed)
@@ -35,9 +35,7 @@ def set_seed(seed: int):
     torch.backends.cudnn.benchmark = False
 
 
-# =========================
 # 1) 저장 유틸
-# =========================
 def save_checkpoint(state, checkpoint_dir, filename):
     os.makedirs(checkpoint_dir, exist_ok=True)
     filepath = os.path.join(checkpoint_dir, filename)
@@ -45,9 +43,7 @@ def save_checkpoint(state, checkpoint_dir, filename):
     print(f"Checkpoint saved at {filepath}")
 
 
-# =========================
 # 2) AUROC (예외 안전)
-# =========================
 def safe_auroc(prob_list, label_list):
     """
     prob_list: list[float] (0~1)
@@ -73,9 +69,7 @@ def save_auroc_data(outputs, labels, epoch, phase, save_dir):
     print(f"AUROC data saved for {phase} epoch {epoch} -> {file_path}")
 
 
-# =========================
 # 3) 학습/검증
-# =========================
 def train_and_validate(max_epochs=EPOCHS, patience=20, save_every=5):
     set_seed(SEED)
 
@@ -102,7 +96,7 @@ def train_and_validate(max_epochs=EPOCHS, patience=20, save_every=5):
     print("train samples:", len(train_dataset), "val samples:", len(val_dataset))
     print("class_to_idx:", train_dataset.ds.class_to_idx)
 
-    # ✅ binary는 항상 1 출력(로짓 1개)
+    # binary는 항상 1 출력(로짓 1개)
     model = CustomEfficientNetB3Classifier(num_classes=1).to(DEVICE)
     criterion = nn.BCEWithLogitsLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
